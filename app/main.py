@@ -1,5 +1,5 @@
 import uvicorn
-
+from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -30,6 +30,20 @@ def get_book(book_id: int):
         if book["id"] == book_id:
             return book
     raise HTTPException(status_code=404, detail="Book not found")
+
+class NewBook(BaseModel):
+    title: str
+    author: str
+
+
+@app.post("/books")
+def create_books(new_book: NewBook):
+    books.append({
+        "id": len(books) + 1,
+        "title": new_book.title,
+        "author": new_book.author,
+    })
+
 
 
 if __name__ == "__main__":
